@@ -6,7 +6,38 @@ namespace Avi
     {
         public static MauiApp CreateMauiApp()
         {
-            var builder = MauiApp.CreateBuilder();
+            MauiAppBuilder builder = CreateBuilder();
+            return builder.Build();
+        }
+
+        public static MauiAppBuilder RegisterServices(this MauiAppBuilder mauiAppBuilder)
+        {
+            //mauiAppBuilder.Services.AddTransient<ILoggingService, LoggingService>();
+
+            return mauiAppBuilder;
+        }
+
+        public static MauiAppBuilder RegisterViewModels(this MauiAppBuilder mauiAppBuilder)
+        {
+            //mauiAppBuilder.Services.AddSingleton<MainPageViewModel>();
+
+            // More view-models registered here.
+
+            return mauiAppBuilder;
+        }
+
+        public static MauiAppBuilder RegisterViews(this MauiAppBuilder mauiAppBuilder)
+        {
+            IServiceCollection serviceCollection = mauiAppBuilder.Services.AddSingleton<MainPage>();
+
+            // More views registered here.
+
+            return mauiAppBuilder;
+        }
+
+        private static MauiAppBuilder CreateBuilder()
+        {
+            MauiAppBuilder builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
                 .ConfigureFonts(fonts =>
@@ -16,10 +47,13 @@ namespace Avi
                 });
 
 #if DEBUG
-    		builder.Logging.AddDebug();
+            builder.Logging.AddDebug();
 #endif
+            builder.RegisterServices();
+            builder.RegisterViewModels();
+            builder.RegisterViews();
 
-            return builder.Build();
+            return builder;
         }
     }
 }
